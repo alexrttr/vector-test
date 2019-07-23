@@ -19,6 +19,13 @@ struct Heavy
     Heavy& operator=(Heavy other)
     {
        swap(other);
+       std::cout << "copy assign" << std::endl;
+       return *this;
+    }
+    Heavy& operator=(Heavy&& other)
+    {
+       // move operations
+       std::cout << "move assign" << std::endl;
        return *this;
     }
     void swap(Heavy& other) { }
@@ -89,22 +96,52 @@ int main(int argc, char** argv)
 
     printGlobals();
 
+    std::cout << "decltype, move" << std::endl;
+    std::vector<Heavy> vEEM;
+    vEEM.reserve(50);
+    for (int i = 0; i < 5; ++i)
+    {
+        decltype(std::move(v3[i])) ell = std::move(v3[i]);
+        vEEM.emplace_back(std::move(ell));
+    }
+
+    printGlobals();
+
+    std::cout << "decltype" << std::endl;
     std::vector<Heavy> vEE;
     vEE.reserve(50);
     for (int i = 0; i < 5; ++i)
     {
         decltype(std::move(v3[i])) ell = std::move(v3[i]);
-        vEE.emplace_back(std::move(ell));
+        printGlobals();
+        vEE.emplace_back(ell);
+        printGlobals();
     }
 
     printGlobals();
 
+    std::cout << "auto, emplace_back" << std::endl;
     std::vector<Heavy> vEEE;
     vEEE.reserve(50);
     for (int i = 0; i < 5; ++i)
     {
         auto el = std::move(v3[i]);
+        printGlobals();
         vEEE.emplace_back(el);
+        printGlobals();
+    }
+
+    printGlobals();
+
+    std::cout << "auto, emplace_back moved" << std::endl;
+    std::vector<Heavy> vEEEM;
+    vEEEM.reserve(50);
+    for (int i = 0; i < 5; ++i)
+    {
+        auto el = std::move(v3[i]);
+        printGlobals();
+        vEEEM.emplace_back(std::move(el));
+        printGlobals();
     }
 
     printGlobals();
